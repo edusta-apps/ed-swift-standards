@@ -1,0 +1,194 @@
+# ed-swift-standards — hosted parent SwiftLint config.
+#
+# Every ED* Swift lib repo and every EDUsta iOS app points its own
+# .swiftlint.yml at this file via `parent_config:` (see Lint/README.md)
+# rather than copying rules in.
+# Fix a bad rule here, never patch it downstream.
+
+excluded:
+  - .build/
+  - DerivedData/
+  - .derived-data/
+  # Deliberately-violating fixtures for Lint/probe.sh — never part of the
+  # package lint. probe.sh strips this exclusion to lint them on their own.
+  - Lint/probes/
+
+opt_in_rules:
+  - mark
+  - sorted_imports
+
+file_length:
+  warning: 600
+  error: 1200
+
+type_body_length:
+  warning: 300
+  error: 600
+
+function_body_length:
+  warning: 100
+  error: 200
+
+# `NetworkRequestLogging.log(...)` genuinely needs 6 parameters (request,
+# response, responseData, duration, error, category) — `category` is
+# caller-supplied by design (B7: no host-string classification inside the
+# package). Default warning threshold is 5.
+function_parameter_count:
+  warning: 6
+  error: 8
+
+nesting:
+  type_level: 2
+
+large_tuple:
+  warning: 4
+
+identifier_name:
+  excluded:
+    - id
+    - xs
+    - sm
+    - md
+    - lg
+    - xl
+    - ui
+
+custom_rules:
+  no_fileprivate:
+    name: "No fileprivate"
+    regex: '\bfileprivate\b'
+    message: "Use `private` (same-file extensions can still access it) or widen to `internal`. Never `fileprivate`."
+    # Access-level modifiers are classified by SourceKit as `attribute.builtin`,
+    # not `keyword` — probing confirmed `match_kinds: [keyword]` silently
+    # matches nothing at all (not even genuine `fileprivate` usage).
+    match_kinds:
+      - attribute.builtin
+    severity: error
+
+  no_anyview:
+    name: "No AnyView"
+    regex: '\bAnyView\('
+    message: "Avoid `AnyView` in shared content closures/cells — it defeats SwiftUI's diffing. Use `@ViewBuilder` or a concrete type."
+    match_kinds:
+      - identifier
+    severity: warning
+
+  no_hydration_term:
+    name: "No hydration terminology"
+    regex: '(?i)\bhydrat(e|ed|es|ing|ion)\b'
+    message: "Don't use \"hydrate/hydration\" in identifiers or comments. Say what actually happens (load, populate, restore)."
+    severity: error
+
+  no_memory_slug_comment:
+    name: "No memory-slug comments"
+    # `[^\n]*`, not `.*` — SwiftLint's custom-rule regex matches `.` across
+    # line boundaries. With `.*` a single match starting at the first `//`
+    # in the file can swallow everything up to a later, unrelated slug
+    # reference, silently hiding every match after the first.
+    regex: '//[^\n]*(feedback_[a-z0-9_]+\.md|project_[a-z0-9_]+\.md|[Ss]trong-foundation)'
+    message: "Don't reference internal memory-file slugs or write \"strong foundation\" narration in code comments."
+    severity: error
+
+  no_optional_service_dep:
+    name: "No optional/defaulted service dependencies"
+    # Anchored to an init-parameter-list shape (`,`/`(` then `name: Type? = nil`)
+    # so a plain `@Published var x: Foo? = nil` property isn't flagged — only
+    # a defaulted-away-from-required init parameter is.
+    regex: '[(,]\s*\w+:\s*(any )?\w+(Service|Repository|Client|Manager|Coordinator)(Protocol)?\)?\?\s*=\s*nil'
+    message: "Service/repository dependencies are required `init` parameters — no `= nil` default. Fail hard, don't guard-nil."
+    severity: error
+
+  no_default_service_instance:
+    name: "No default live-service instance in init"
+    regex: '(any )?\w+(Service|Repository)Protocol\s*=\s*\w+\('
+    message: "Don't default a protocol-typed parameter to a concrete live instance. Require it; tests wire mocks explicitly."
+    severity: error
+
+  no_a11y_key:
+    name: "Accessibility keys spell it out"
+    regex: '"[\w.]*a11y[\w.]*"'
+    message: "Localization keys spell \"accessibility\", never the \"a11y\" abbreviation."
+    match_kinds:
+      - string
+    severity: error
+
+  final_class:
+    name: "Classes are final"
+    # Excludes a line containing "final class"/"open class" (covers `public
+    # final class` too) so already-final and deliberately-open classes never
+    # match; excludes `class func`/`class var` (member modifiers, not a type
+    # declaration); includes `package` in the visibility prefix so `package
+    # class Foo` is caught, not silently skipped. The lookahead uses
+    # `[^\n]*`, not `.*` — SwiftLint's custom-rule regex matches `.` across
+    # line boundaries, so an unscoped `.*` here would let a `final class`
+    # declared *anywhere later in the file* suppress every earlier bare-class
+    # match too.
+    regex: '(?m)^\s*(?![^\n]*\b(final|open)\s+class\b)(@\w+(\([^)]*\))?\s+)*(public |internal |private |package )?class\s+(?!func\b|var\b)\w+'
+    message: "Mark classes `final` unless they're deliberately subclassed (then use `open`, not a bare `class`)."
+    severity: error
+
+  no_completion_handler:
+    name: "No new completion-handler APIs"
+    regex: 'completion:\s*@escaping'
+    message: "Prefer async/await over completion handlers for new APIs."
+    severity: warning
+
+  viewmodel_main_actor:
+    name: "ViewModels are @MainActor"
+    # Fixed-length lookbehinds only (NSRegularExpression requirement): both
+    # `@MainActor\n` (11 chars) and `@MainActor ` (11 chars) cover the two
+    # legal spellings — `@MainActor` on the line above, or `@MainActor final
+    # class` on the same line.
+    regex: '(?<!@MainActor\n)(?<!@MainActor )\bfinal class \w+ViewModel\b'
+    message: "Every `*ViewModel` is `@MainActor final class ... ObservableObject`. Add `@MainActor` on the line above."
+    severity: error
+
+  service_protocol_sendable:
+    name: "Service protocols are Sendable"
+    regex: 'protocol \w+(Service|Repository|Client|Provider|Providing|Signaling|Building|Logging|Executing|Sink)(Protocol)?\s*(\{|:\s*(?![^{]*Sendable))'
+    message: "Service/repository/client protocols must conform to `Sendable` — they cross isolation boundaries via the container."
+    severity: error
+
+  no_inline_english:
+    name: "No inline English UI strings"
+    regex: '(Text|Label|Button|accessibilityLabel|accessibilityHint)\("[A-Za-z][^"]*\s[^"]*"\)'
+    message: "Use `String(localized:)` with a catalog key — never an inline English sentence in `Text`/`Label`/`Button`/accessibility modifiers."
+    excluded: ".*(Preview|Tests).*"
+    severity: warning
+
+  no_xctest:
+    name: "No XCTest in new tests"
+    regex: '\bimport XCTest\b|\bXCTAssert\w*\('
+    message: "New tests use Swift Testing (`@Test`, `#expect`), not XCTest."
+    included: ".*Tests.*"
+    severity: error
+
+  no_task_sleep_in_tests:
+    name: "No Task.sleep in tests"
+    regex: 'Task\.sleep\('
+    message: "Don't sleep in tests — await the signal (stream/continuation/task) the code under test actually produces."
+    included: ".*Tests.*"
+    severity: error
+
+  no_is_loading_bool:
+    name: "No scattered isLoading/hasLoaded booleans"
+    regex: '@Published\s+(private\(set\)\s+)?var\s+(is|has)(Loading|Loaded)\w*\s*[:=]'
+    message: "Use a state enum (e.g. `LoadState`) for mutually exclusive page states, not a parallel `isLoading`/`hasLoaded` boolean."
+    severity: warning
+
+  no_raw_color:
+    name: "No raw color literals outside the theme module"
+    # `.clear` dropped: it's a structural spacer/divider value, not a theme
+    # decision (`Color.clear.frame(height: 1)`), and flagging it at `error`
+    # mass-fails adopting apps on a non-issue.
+    regex: 'Color\.(white|black|red|blue|green|gray)\b|Color\(hex:|Color\(red:|Color\(\.sRGB'
+    message: "Only the theme module constructs `Color(...)`. Use the semantic token instead."
+    excluded: ".*/(Theme|EDTheme)/.*"
+    severity: error
+
+  no_raw_spacing_font:
+    name: "No raw spacing or font literals outside the theme module"
+    regex: '\.font\(\.system\(size:|\.padding\(\d'
+    message: "Only the theme module hardcodes spacing/font values. Use the semantic token instead."
+    excluded: ".*/(Theme|EDTheme)/.*"
+    severity: error

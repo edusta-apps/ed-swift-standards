@@ -1,0 +1,148 @@
+{
+  "Tests/no_task_sleep_in_tests.swift": [
+    {
+      "rule": "no_task_sleep_in_tests",
+      "line": 7
+    }
+  ],
+  "Tests/no_xctest.swift": [
+    {
+      "rule": "no_xctest",
+      "line": 5
+    },
+    {
+      "rule": "no_xctest",
+      "line": 9
+    }
+  ],
+  "final_class.swift": [
+    {
+      "rule": "final_class",
+      "line": 4
+    },
+    {
+      "rule": "final_class",
+      "line": 7
+    },
+    {
+      "rule": "final_class",
+      "line": 10
+    }
+  ],
+  "no_a11y_key.swift": [
+    {
+      "rule": "no_a11y_key",
+      "line": 4
+    }
+  ],
+  "no_anyview.swift": [
+    {
+      "rule": "no_anyview",
+      "line": 8
+    }
+  ],
+  "no_completion_handler.swift": [
+    {
+      "rule": "no_completion_handler",
+      "line": 4
+    }
+  ],
+  "no_default_service_instance.swift": [
+    {
+      "rule": "no_default_service_instance",
+      "line": 4
+    }
+  ],
+  "no_fileprivate.swift": [
+    {
+      "rule": "no_fileprivate",
+      "line": 6
+    }
+  ],
+  "no_hydration_term.swift": [
+    {
+      "rule": "no_hydration_term",
+      "line": 6
+    },
+    {
+      "rule": "no_hydration_term",
+      "line": 10
+    },
+    {
+      "rule": "no_hydration_term",
+      "line": 13
+    }
+  ],
+  "no_inline_english.swift": [
+    {
+      "rule": "no_inline_english",
+      "line": 8
+    }
+  ],
+  "no_is_loading_bool.swift": [
+    {
+      "rule": "no_is_loading_bool",
+      "line": 7
+    },
+    {
+      "rule": "no_is_loading_bool",
+      "line": 10
+    }
+  ],
+  "no_memory_slug_comment.swift": [
+    {
+      "rule": "no_memory_slug_comment",
+      "line": 4
+    },
+    {
+      "rule": "no_memory_slug_comment",
+      "line": 8
+    }
+  ],
+  "no_optional_service_dep.swift": [
+    {
+      "rule": "no_optional_service_dep",
+      "line": 7
+    },
+    {
+      "rule": "no_optional_service_dep",
+      "line": 11
+    }
+  ],
+  "no_raw_color.swift": [
+    {
+      "rule": "no_raw_color",
+      "line": 6
+    }
+  ],
+  "no_raw_spacing_font.swift": [
+    {
+      "rule": "no_raw_spacing_font",
+      "line": 8
+    },
+    {
+      "rule": "no_raw_spacing_font",
+      "line": 10
+    }
+  ],
+  "service_protocol_sendable.swift": [
+    {
+      "rule": "service_protocol_sendable",
+      "line": 4
+    },
+    {
+      "rule": "service_protocol_sendable",
+      "line": 14
+    }
+  ],
+  "viewmodel_main_actor.swift": [
+    {
+      "rule": "viewmodel_main_actor",
+      "line": 4
+    },
+    {
+      "rule": "viewmodel_main_actor",
+      "line": 15
+    }
+  ]
+}
