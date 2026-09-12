@@ -27,17 +27,18 @@ to prevent.
 
 ## What's in the parent config
 
-- Built-in rule thresholds tuned per `havira-ios/.swiftlint.yml` precedent
-  (`file_length`, `type_body_length`, `function_body_length`, `nesting`,
-  `identifier_name` exclusions for short semantic names like `id`/`sm`/`lg`).
-- `custom_rules` implementing every regex-expressible lesson from
-  `LESSONS_TRIAGE.md` §2: no `fileprivate`, no `AnyView`, no hydration
-  terminology, no memory-slug comments, no optional/defaulted service
-  dependencies, no `.a11y` localization keys, classes are `final`, no new
-  completion-handler APIs, `@MainActor` on ViewModels, service protocols are
-  `Sendable`, no inline English UI strings, Swift Testing only (no XCTest,
-  no `Task.sleep` in tests), no scattered `isLoading`/`hasLoaded` booleans,
-  no raw color/font/spacing literals outside a theme module.
+- Built-in rule thresholds tuned per precedent from a consumer app's
+  `.swiftlint.yml` (`file_length`, `type_body_length`, `function_body_length`,
+  `nesting`, `identifier_name` exclusions for short semantic names like
+  `id`/`sm`/`lg`).
+- `custom_rules` implementing every regex-expressible lesson we've collected:
+  no `fileprivate`, no `AnyView`, no hydration terminology, no internal
+  note-slug comments, no optional/defaulted service dependencies, no `.a11y`
+  localization keys, classes are `final`, no new completion-handler APIs,
+  `@MainActor` on ViewModels, service protocols are `Sendable`, no inline
+  English UI strings, Swift Testing only (no XCTest, no `Task.sleep` in
+  tests), no scattered `isLoading`/`hasLoaded` booleans, no raw color/font/
+  spacing literals outside a theme module.
 
 ## Probe fixtures — `Lint/probes/`
 
@@ -73,8 +74,8 @@ new ground truth actually matches what SwiftLint does before committing it.
 
 ## What's deliberately not in here
 
-A few §2 lessons are judgment calls a regex can't safely make — see
-`rules/swiftui.md` in the ed-claude-plugin instead:
+A few lessons are judgment calls a regex can't safely make, so they're
+enforced through human review instead:
 
 - The `EnvironmentKey`-with-a-service-protocol prohibition has four
   documented, approved exceptions (`DependencyContainer.shared` plumbing

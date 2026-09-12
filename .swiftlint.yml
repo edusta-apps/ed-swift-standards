@@ -80,13 +80,13 @@ custom_rules:
     severity: error
 
   no_memory_slug_comment:
-    name: "No memory-slug comments"
+    name: "No internal note-slug comments"
     # `[^\n]*`, not `.*` — SwiftLint's custom-rule regex matches `.` across
     # line boundaries. With `.*` a single match starting at the first `//`
     # in the file can swallow everything up to a later, unrelated slug
     # reference, silently hiding every match after the first.
     regex: '//[^\n]*(feedback_[a-z0-9_]+\.md|project_[a-z0-9_]+\.md|[Ss]trong-foundation)'
-    message: "Don't reference internal memory-file slugs or write \"strong foundation\" narration in code comments."
+    message: "Don't reference agent-memory note filenames or write \"strong foundation\" narration in code comments."
     severity: error
 
   no_optional_service_dep:
