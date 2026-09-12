@@ -1,6 +1,6 @@
 // Probe fixture for the `no_memory_slug_comment` custom rule.
 final class Foo {
-    // TRUE POSITIVE: references a memory-file slug.
+    // TRUE POSITIVE: references an internal note-slug.
     // see project_alpha_beta.md
     var a = 1
 

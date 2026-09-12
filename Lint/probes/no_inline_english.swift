@@ -5,7 +5,7 @@ struct WelcomeScreen: View {
     var body: some View {
         VStack {
             // TRUE POSITIVE: inline English sentence in Text.
-            Text("Welcome to Havira")
+            Text("Welcome to the app")
 
             // FALSE POSITIVE CHECK: single-word string, no space, not a sentence.
             Text("OK")
