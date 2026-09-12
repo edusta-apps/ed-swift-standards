@@ -4,6 +4,8 @@ Central Swift lint, format, and probe configs for EDUsta iOS apps and packages u
 
 Consumers point at this file with `parent_config: https://raw.githubusercontent.com/edusta-apps/ed-swift-standards/main/.swiftlint.yml`. SwiftLint's `parent_config` fails open: if that fetch fails, linting silently falls back to SwiftLint's defaults with only a warning, so a consumer's CI should assert that at least one custom rule from this config actually fires.
 
+CI runs the probe suite on every PR, so a rule change that breaks a fixture cannot merge.
+
 ## What lives here
 
 - `.swiftlint.yml` — canonical SwiftLint config
