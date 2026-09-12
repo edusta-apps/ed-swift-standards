@@ -7,4 +7,10 @@ struct SomeView {
 
     // FALSE POSITIVE CHECK: .clear is a structural spacer value, not a theme decision.
     let b = Color.clear
+
+    // FALSE POSITIVE CHECK: UIColor is a different API, not a theme decision.
+    let c = UIColor.red
+
+    // FALSE POSITIVE CHECK: UIColor(...) is a different API, not a theme decision.
+    let d = UIColor(red: 1, green: 0, blue: 0, alpha: 1)
 }

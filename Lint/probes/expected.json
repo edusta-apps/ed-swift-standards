@@ -15,6 +15,9 @@
       "line": 9
     }
   ],
+  "Tests/no_optional_service_dep_in_tests.swift": [],
+  "Tests/no_default_service_instance_in_tests.swift": [],
+  "UITests/no_xctest_in_uitests.swift": [],
   "final_class.swift": [
     {
       "rule": "final_class",
