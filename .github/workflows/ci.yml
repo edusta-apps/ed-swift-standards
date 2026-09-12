@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  probes:
+    name: Lint probes
+    runs-on: macos-26
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: Run probe suite
+        run: |
+          set -euo pipefail
+          chmod +x Lint/probe.sh
+          Lint/probe.sh
+
+      # SwiftLint's parent_config fails OPEN: a bad YAML edit that makes
+      # SwiftLint silently drop custom_rules would still exit 0. Assert the
+      # config actually loads its custom rules by checking that final_class
+      # fires on its own probe fixture. Lint/probes/ is in `excluded:` (it
+      # holds deliberately-bad fixtures), and SwiftLint 0.61 applies
+      # `excluded` even to an explicitly-named path, so strip that entry the
+      # same way Lint/probe.sh does before pointing at the fixture.
+      - name: Verify custom_rules load
+        run: |
+          set -euo pipefail
+          tmp_config="$(mktemp -t swiftlint-verify.XXXXXX.yml)"
+          awk '/^excluded:/{print "excluded: []"; skip=1; next} skip && /^[[:space:]]/{next} {skip=0; print}' .swiftlint.yml > "$tmp_config"
+          result="$(swiftlint lint --config "$tmp_config" --reporter json Lint/probes/final_class.swift)"
+          if ! grep -q '"rule_id" : "final_class"' <<< "$result"; then
+            echo "::error title=custom_rules not loaded::final_class did not fire on Lint/probes/final_class.swift. Check .swiftlint.yml for a YAML typo under custom_rules."
+            exit 1
+          fi
+          echo "custom_rules verified live: final_class fired on the probe."
