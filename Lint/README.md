@@ -93,3 +93,10 @@ enforced through human review instead:
   that already exist.
 - A repo-wide `file_header` template isn't enabled yet — no kit-wide header
   convention has been agreed on. Add it here once one is.
+
+## Import order
+
+Imports are layered, not alphabetical: Foundation first, then SwiftUI, then
+Combine, then third-party modules, then remaining system frameworks. This is
+review-enforced — SwiftLint's `sorted_imports` only knows alphabetical order,
+which conflicts with this layering, so that opt-in rule stays off here.
