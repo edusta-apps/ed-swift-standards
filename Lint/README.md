@@ -98,5 +98,5 @@ enforced through human review instead:
 
 Imports are layered, not alphabetical: Foundation first, then SwiftUI, then
 Combine, then third-party modules, then remaining system frameworks. This is
-review-enforced — SwiftLint's `sorted_imports` only knows alphabetical order,
+review-enforced. SwiftLint's `sorted_imports` only knows alphabetical order,
 which conflicts with this layering, so that opt-in rule stays off here.
