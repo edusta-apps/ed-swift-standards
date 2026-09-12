@@ -62,6 +62,13 @@ Two rules (`no_xctest`, `no_task_sleep_in_tests`) are scoped with
 `Lint/probes/Tests/<rule_id>.swift` — the path itself has to satisfy the
 rule's scope for the probe to mean anything.
 
+A rule with an `excluded:` scope (e.g. `no_optional_service_dep`,
+`no_default_service_instance` excluding `.*Tests.*`; `no_xctest` also
+excluding `.*UITests.*`) additionally ships a fixture placed inside the
+excluded path, containing the exact pattern that would fire outside it, with
+an `expected.json` entry that is an empty array — asserting the rule stays
+silent there. An extra violation on that file still fails the diff in step 4.
+
 Run it locally with:
 
 ```sh
