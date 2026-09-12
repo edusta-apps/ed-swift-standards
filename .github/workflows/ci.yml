@@ -43,7 +43,11 @@ jobs:
           set -euo pipefail
           tmp_config="$(mktemp -t swiftlint-verify.XXXXXX.yml)"
           awk '/^excluded:/{print "excluded: []"; skip=1; next} skip && /^[[:space:]]/{next} {skip=0; print}' .swiftlint.yml > "$tmp_config"
+          # swiftlint exits 1/2 when it finds violations, which is the
+          # expected outcome here, so it must not trip -e.
+          set +e
           result="$(swiftlint lint --config "$tmp_config" --reporter json Lint/probes/final_class.swift)"
+          set -e
           if ! grep -q '"rule_id" : "final_class"' <<< "$result"; then
             echo "::error title=custom_rules not loaded::final_class did not fire on Lint/probes/final_class.swift. Check .swiftlint.yml for a YAML typo under custom_rules."
             exit 1
