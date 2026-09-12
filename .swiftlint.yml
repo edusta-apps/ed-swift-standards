@@ -15,7 +15,6 @@ excluded:
 
 opt_in_rules:
   - mark
-  - sorted_imports
 
 file_length:
   warning: 600
@@ -104,7 +103,9 @@ custom_rules:
 
   no_default_service_instance:
     name: "No default live-service instance in init"
-    regex: '(any )?\w+(Service|Repository)Protocol\s*=\s*\w+\('
+    # Anchored to an init-parameter-list shape (`,`/`(` then `name:`), like
+    # its sibling below, so a composition-root property declaration isn't flagged.
+    regex: '[(,]\s*\w+:\s*(any )?\w+(Service|Repository)Protocol\s*=\s*\w+\('
     message: "Don't default a protocol-typed parameter to a concrete live instance. Require it; tests wire mocks explicitly."
     # Targets production composition roots only. Test factory helpers
     # (`makeSUT`/`makeManager`) defaulting mock parameters is the standard

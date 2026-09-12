@@ -8,4 +8,11 @@ final class Foo {
 
     // FALSE POSITIVE CHECK: type does not end in Service/RepositoryProtocol.
     init(cache: CacheProtocol = MemoryCache()) {}
+
+    // FALSE POSITIVE CHECK: property declaration, not an init parameter —
+    // constructing the live default is the composition root's job.
+    lazy var auth: any AuthServiceProtocol = LiveAuthService()
+
+    // FALSE POSITIVE CHECK: same shape, `let` instead of `lazy var`.
+    let repo: any UserRepositoryProtocol = LiveUserRepository()
 }
