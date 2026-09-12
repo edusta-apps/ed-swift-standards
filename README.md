@@ -15,11 +15,10 @@ Consumers point at this file with `parent_config: https://raw.githubusercontent.
 Add to your own `.swiftlint.yml`:
 
 ```yaml
-parent_config:
-  repository: git@github.com:edusta-apps/ed-swift-standards.git
-  ref: main
-  path: .swiftlint.yml
+parent_config: https://raw.githubusercontent.com/edusta-apps/ed-swift-standards/main/.swiftlint.yml
 ```
+
+`parent_config` takes a plain URL string. A `repository:`/`ref:`/`path:` mapping is not a SwiftLint feature; SwiftLint ignores it without any warning and lints with its defaults.
 
 ## The rule
 
