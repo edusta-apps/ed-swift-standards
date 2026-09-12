@@ -10,15 +10,15 @@ here — never patch around it in an app's local config.
 Add a `.swiftlint.yml` to the app repo with:
 
 ```yaml
-parent_config:
-  repository: git@github.com:edusta-apps/ed-swift-standards.git
-  ref: main
-  path: .swiftlint.yml
+parent_config: https://raw.githubusercontent.com/edusta-apps/ed-swift-standards/main/.swiftlint.yml
 ```
 
-That's the whole file, three keys. SwiftLint resolves the parent config over
-the network (or from cache) and merges it with anything the app's own file
-adds. Pin `ref` to a tag once the kit cuts releases; track `main` until then.
+That's the whole file, one key. SwiftLint fetches the parent config over
+plain HTTPS (or from its cache) and merges it with anything the app's own
+file adds; the app's values win. Replace `main` in the URL with a tag once
+this repo cuts releases; track `main` until then. Note that a failed fetch
+does not fail the lint: SwiftLint warns and falls back to its defaults, so
+CI should assert that a custom rule from this config fires.
 
 App-local additions belong in the same file, below the `parent_config:` key —
 for example, an app-specific `excluded:` path. Don't redeclare a rule the
