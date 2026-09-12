@@ -96,7 +96,7 @@ custom_rules:
     # a defaulted-away-from-required init parameter is.
     regex: '[(,]\s*\w+:\s*(any )?\w+(Service|Repository|Client|Manager|Coordinator)(Protocol)?\)?\?\s*=\s*nil'
     message: "Service/repository dependencies are required `init` parameters — no `= nil` default. Fail hard, don't guard-nil."
-    # Targets production composition roots only — test factory helpers
+    # Targets production composition roots only. Test factory helpers
     # (`makeSUT`/`makeManager`) defaulting mock parameters is the standard
     # Swift Testing idiom, not a smell.
     excluded: ".*Tests.*"
@@ -106,7 +106,7 @@ custom_rules:
     name: "No default live-service instance in init"
     regex: '(any )?\w+(Service|Repository)Protocol\s*=\s*\w+\('
     message: "Don't default a protocol-typed parameter to a concrete live instance. Require it; tests wire mocks explicitly."
-    # Targets production composition roots only — test factory helpers
+    # Targets production composition roots only. Test factory helpers
     # (`makeSUT`/`makeManager`) defaulting mock parameters is the standard
     # Swift Testing idiom, not a smell.
     excluded: ".*Tests.*"
@@ -168,7 +168,7 @@ custom_rules:
     name: "No XCTest in new tests"
     regex: '\bimport XCTest\b|\bXCTAssert\w*\('
     message: "New tests use Swift Testing (`@Test`, `#expect`), not XCTest."
-    # UITests targets are excluded — XCUITest has no Swift Testing UI-automation
+    # UITests targets are excluded: XCUITest has no Swift Testing UI-automation
     # equivalent, so XCTest is the only viable API there.
     included: ".*Tests.*"
     excluded: ".*UITests.*"
