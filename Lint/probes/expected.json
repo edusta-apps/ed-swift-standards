@@ -126,6 +126,14 @@
     {
       "rule": "no_raw_spacing_font",
       "line": 10
+    },
+    {
+      "rule": "no_raw_spacing_font",
+      "line": 40
+    },
+    {
+      "rule": "no_raw_spacing_font",
+      "line": 45
     }
   ],
   "service_protocol_sendable.swift": [

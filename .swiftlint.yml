@@ -204,7 +204,8 @@ custom_rules:
 
   no_raw_spacing_font:
     name: "No raw spacing or font literals outside the theme module"
-    regex: '\.font\(\.system\(size:|\.padding\(\d'
+    # Targets numeric literals only; token references and computed sizes are legitimate.
+    regex: '\.font\(\.system\(size:\s*\d|\.padding\(\s*\d'
     message: "Only the theme module hardcodes spacing/font values. Use the semantic token instead."
     excluded: ".*/(Theme|EDTheme)/.*"
     severity: error
