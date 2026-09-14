@@ -152,10 +152,21 @@ custom_rules:
     message: "Every `*ViewModel` is `@MainActor final class ... ObservableObject`. Add `@MainActor` on the line above."
     severity: error
 
-  service_protocol_sendable:
-    name: "Service protocols are Sendable"
-    regex: 'protocol \w+(Service|Repository|Client|Provider|Providing|Signaling|Building|Logging|Executing|Sink)(Protocol)?\s*(\{|:\s*(?![^{]*Sendable))'
-    message: "Service/repository/client protocols must conform to `Sendable` — they cross isolation boundaries via the container."
+  service_protocol_isolation:
+    name: "Service protocols are Sendable or MainActor-isolated"
+    # A service-ish protocol needs a defined isolation story to cross the
+    # container safely: either it's `Sendable` (checked as before by the
+    # trailing negative lookahead), or it's `@MainActor`-isolated, which
+    # under SE-0470 cannot also conform to `Sendable` on the same
+    # declaration — so a `@MainActor` protocol is exempted outright rather
+    # than required to add `Sendable`. Fixed-length lookbehinds only
+    # (NSRegularExpression requirement): each legal spelling of the
+    # attribute immediately before `protocol` is enumerated separately,
+    # mirroring `viewmodel_main_actor` above. `@MainActor` on the line
+    # above, `@MainActor protocol` and `@MainActor <access> protocol` on
+    # the same line all exempt the declaration.
+    regex: '(?<!@MainActor\n)(?<!@MainActor )(?<!@MainActor public )(?<!@MainActor package )(?<!@MainActor internal )protocol \w+(Service|Repository|Client|Provider|Providing|Signaling|Building|Logging|Executing|Sink)(Protocol)?\s*(\{|:\s*(?![^{]*Sendable))'
+    message: "Service/repository/client protocols must be `Sendable` or `@MainActor`-isolated; a nonisolated non-Sendable protocol cannot be handed across isolation boundaries safely."
     severity: error
 
   no_inline_english:
