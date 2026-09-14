@@ -136,14 +136,18 @@
       "line": 45
     }
   ],
-  "service_protocol_sendable.swift": [
+  "service_protocol_isolation.swift": [
     {
-      "rule": "service_protocol_sendable",
+      "rule": "service_protocol_isolation",
       "line": 4
     },
     {
-      "rule": "service_protocol_sendable",
+      "rule": "service_protocol_isolation",
       "line": 14
+    },
+    {
+      "rule": "service_protocol_isolation",
+      "line": 35
     }
   ],
   "viewmodel_main_actor.swift": [
